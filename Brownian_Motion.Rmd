@@ -1,0 +1,61 @@
+---
+title: "Brownian Motion with rpgm Package"
+author: "Graeme Keleher"
+date: "May 30, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#Load Packages
+rpmg is for creating realizations of Brownian Motion and xts for working with time series
+```{r message=FALSE, warning=FALSE}
+library(rpgm)
+library(xts)
+```
+
+#Create Realizations
+Note that the values of mean and standard deviation refer to the values for the entire realization and not for a 'step in the white noise'.
+```{r}
+#Numeber of realizations
+n = 5
+#Number of steps
+m = 100
+#Starting Value
+b = 1
+#Mean of ENTIRE realization
+mean = 1
+#Standard deviation of ENTIRE realization
+r = .5
+
+#Calculate Realizations with rbrownian function
+Realizations= rbrownian(n, m, b0 = b, mu = mean, sd = r )
+
+#Convert to data frame
+Realizations = as.data.frame(t(Realizations))
+
+#Create vector of Dates
+dates <- seq(as.Date("2016-01-01"), length = m +1, by = "days")
+
+#Create time series object of realizations
+Brownian = xts(x = Realizations, order.by = dates)
+```
+
+
+#Plot Using xts.plot Funtion
+```{r, echo = FALSE}
+
+plot(Brownian, xlab = "Stock Return", main = "Cumulative Returns (Daily)", screens = 1)
+legend(x = "topleft", legend = c("Stock_1", "Stock_2", "Stock_3", "Stock_4", "Stock_5"), 
+       lty = 1)
+
+```
+
+
+
+
+
+
